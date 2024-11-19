@@ -33,12 +33,23 @@ class IBDSegment{
             }
             else{
                 std::vector<std::string> vals = split(str, '\t');
-                this->index1 = std::stoi(vals[0]);
-                this->index2 = std::stoi(vals[1]);
-                this->start = std::stod(vals[2]);
-                this->end = std::stod(vals[3]);
-                this->segment_interval.start = this->start;
-                this->segment_interval.end = this->end;
+                if(vals[0].at(0) == 't'){
+                    this->index1 = (std::stoi(split(vals[0], '_')[1]) * 2) + (std::stoi(vals[1]) - 1);
+                    this->index2 = (std::stoi(split(vals[2], '_')[1]) * 2) + (std::stoi(vals[3]) - 1);
+                    this->start = std::stoi(vals[5]);
+                    this->end = std::stoi(vals[6]);
+                    this->segment_interval.start = std::stoi(vals[5]);
+                    this->segment_interval.end = std::stoi(vals[6]);
+                }
+                else{
+                    this->index1 = std::stoi(vals[0]);
+                    this->index2 = std::stoi(vals[1]);
+                    this->start = std::stoi(vals[2]);
+                    this->end = std::stoi(vals[3]);
+                    this->segment_interval.start = this->start;
+                    this->segment_interval.end = this->end;
+                }
+                
             }
         }
 
@@ -50,7 +61,11 @@ class IBDSegment{
 
         bool operator==(const IBDSegment& other);
 
-        double getCoverage(IBDSegment& other);
+        bool operator!=(const IBDSegment& other);
+
+        float getCoverage(IBDSegment& other);
+
+        void display();
 };
 
-double getCoverage(int start1, int end1, int start2, int end2);
+float getCoverage(int start1, int end1, int start2, int end2);

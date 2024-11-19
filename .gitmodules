@@ -4,3 +4,6 @@
 [submodule "kastore"]
 	path = kastore
 	url = https://github.com/tskit-dev/kastore.git
+[submodule "pbwt"]
+	path = pbwt
+	url = https://github.com/amercadel/pbwt.git

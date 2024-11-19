@@ -4,7 +4,9 @@
 #include <algorithm>
 #include <random>
 #include <unordered_map>
+#include <vector>
 #include "utils.hpp"
+
 
 
 class VCF{
@@ -40,7 +42,7 @@ class VCF{
                 this->ids_map[tmp[i]] = i + 9;
             }
         }
-        void implant_error(double error_rate);
+        void implant_error(float error_rate);
 
         void write_to_file(std::string output_file);
 
@@ -53,3 +55,5 @@ class VCF{
 };
 
 int count_p_smoother_corrections(VCF unsmooth_vcf, VCF smooth_vcf);
+void getSiteMappingAndGenotypes(char* vcf_file, std::vector<std::vector<int>> &genotype_array, std::vector<int> &site_mapping, int n_threads);
+std::vector<char*> splitVCFByPos(char* input_vcf, std::vector<std::pair<int, int>> &overlapping_windows);

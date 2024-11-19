@@ -2,7 +2,7 @@
 #include "segment.hpp"
 
 
-void filter_hap(const std::string &input_fp, const std::string &output_fp, double threshold){
+void filter_hap(const std::string &input_fp, const std::string &output_fp, float threshold){
     std::ifstream input_file(input_fp);
     std::ofstream output_file(output_fp);
     std::string line;
@@ -18,7 +18,7 @@ void filter_hap(const std::string &input_fp, const std::string &output_fp, doubl
 
 }
 
-void filter_gt(const std::string &input_fp, const std::string &output_fp, double threshold){
+void filter_gt(const std::string &input_fp, const std::string &output_fp, float threshold){
     std::ifstream input_file(input_fp);
     std::ofstream output_file(output_fp);
     std::string line;
@@ -76,7 +76,7 @@ std::vector<std::string> split(const std::string &line, char delim){
 
 }
 
-void filter_by_overlap(const std::string &hap_ibd_fp, const std::string &gt_fp, double cutoff){
+void filter_by_overlap(const std::string &hap_ibd_fp, const std::string &gt_fp, float cutoff){
     std::ifstream hap_input(hap_ibd_fp);
     std::ifstream gt_input(gt_fp);
     std::stringstream false_ibd_fp;
@@ -85,7 +85,7 @@ void filter_by_overlap(const std::string &hap_ibd_fp, const std::string &gt_fp, 
     true_ibd_fp << "reported_ibds_" << cutoff << ".txt";
     std::ofstream false_output(false_ibd_fp.str());
     std::ofstream true_output(true_ibd_fp.str());
-    std::vector<double> coverage_array;
+    std::vector<float> coverage_array;
     std::vector<IBDSegment> ibd_r;
     std::string line_g, line_r;
     std::getline(gt_input, line_g);
@@ -103,9 +103,9 @@ void filter_by_overlap(const std::string &hap_ibd_fp, const std::string &gt_fp, 
             if(!std::getline(gt_input, line_g)) break;
             gt_obj = IBDSegment(line_g);
         }
-        double max_cov = 0;
+        float max_cov = 0;
         for(auto &ir: ibd_r){
-            double cov = ir.getCoverage(rp_obj);
+            float cov = ir.getCoverage(rp_obj);
             if(cov > max_cov){
                 max_cov = cov;
             }
@@ -130,4 +130,38 @@ void filter_by_overlap(const std::string &hap_ibd_fp, const std::string &gt_fp, 
     false_output.close();
 }
 
-void sort_file(const std::string &input_file, std::vector<int> sort_by, bool reverse);
+std::vector<std::pair<int, int>> overlappingWindows(std::vector<float> cm, float min_seed, int min_markers, int n_threads){
+    std::vector<std::pair<int, int>> window_vec;
+    float L = cm.back() - cm.front();
+    float window_size = ((L - min_seed) / n_threads + min_seed);
+    float dist = (L - min_seed) / n_threads;
+    float start_gen_pos = 0.0f;
+    int i = 0;
+    while(i < n_threads){
+        float end_gen_pos = start_gen_pos + window_size;
+        int start = findInsertionIndex(cm, start_gen_pos);
+        int end = findInsertionIndex(cm, end_gen_pos);
+        start_gen_pos += dist;
+        window_vec.push_back(std::pair<int, int>(start, end));
+        i++;
+    }
+    return window_vec;
+}
+int minSites(std::vector<float> &cm_mapping, float min_seed){
+	int min = cm_mapping.size();
+	for(int i = 0; i < cm_mapping.size(); i++){
+		int j = i + 1;
+		
+		while ((j < cm_mapping.size()) && (cm_mapping[j] - cm_mapping[i] < min_seed)){
+			j++;
+		}
+		if((cm_mapping.back() - cm_mapping[i] > min_seed)){
+			int n = j - i + 1;
+			if (n < min){
+				min = n;
+			}
+		}
+		
+	}
+	return (min == cm_mapping.size()) ? -1 : min;
+}

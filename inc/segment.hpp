@@ -63,7 +63,7 @@ class IBDSegment{
 
         bool operator!=(const IBDSegment& other);
 
-        float getCoverage(IBDSegment& other);
+        float getCoverage(const IBDSegment& other);
 
         void display();
 };

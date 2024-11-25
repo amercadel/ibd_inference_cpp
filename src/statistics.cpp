@@ -67,19 +67,19 @@ float compute_accuracy(std::string gt_fp, std::string rp_fp){
         reported.push_back(IBDSegment(line_r));
     }
     int n_covered = 0;
+    
     for(int i = 0; i < reported.size(); i++){
         for(int j = 0; j < ground_truth.size(); j++){
-            if (!(reported[i] == ground_truth[j])){
-                continue;
+            if(reported[i].index1 == ground_truth[j].index1 && reported[i].index2 == ground_truth[j].index2){
+                float cov = reported[i].getCoverage(ground_truth[j]);
+                if(cov > 0.5f){
+                    n_covered++;
+                    break;
+                }
             }
-            float cov = reported[i].getCoverage(ground_truth[j]);
-            if(cov > 0.5){
-                n_covered += 1;
-            }
-            break;
         }
     }
-    return n_covered / reported.size();
+    return static_cast<float>(n_covered) / reported.size();
 
 }
 
@@ -98,9 +98,9 @@ float compute_power(std::string gt_fp, std::string rp_fp){
     }
     
     for(int i = 0; i < ground_truth.size(); i++){
-        float max_cov = 0;
+        float max_cov = 0.0f;
         for(int j = 0; j < reported.size(); j++){
-            if (ground_truth[i] == reported[j]){
+            if (ground_truth[i].index1 == reported[j].index1 && ground_truth[i].index2 == reported[j].index2){
                 float cov = ground_truth[i].getCoverage(reported[j]);
                 if (cov > max_cov){
                     max_cov = cov;
@@ -113,7 +113,7 @@ float compute_power(std::string gt_fp, std::string rp_fp){
     for (float cov : cov_array) {
         sum_cov += cov;
     }
-    return sum_cov / cov_array.size();
+    return static_cast<float>(sum_cov / cov_array.size());
 
     
 }

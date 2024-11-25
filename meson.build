@@ -47,6 +47,7 @@ my_includes = include_directories('inc')
 
 executable('ibd_pipeline', 
             ['src/main.cpp', 'src/utils.cpp', 'src/statistics.cpp', 'src/segment.cpp', 'src/vcf.cpp', 'src/PBWT.cpp', 'src/RPBWT.cpp',
-            'src/extract_ibd_segments.cpp', 'src/read_rate_map.cpp', 'src/match.cpp', 'src/read_rate_map.cpp'], 
+            'src/extract_ibd_segments.cpp', 'src/read_rate_map.cpp', 'src/match.cpp', 'src/read_rate_map.cpp', 'src/statistics.cpp', 
+            'src/segment.cpp'], 
             include_directories: [my_includes],
             dependencies: [tskit_dep, htslib_dep, pbwt_dep])

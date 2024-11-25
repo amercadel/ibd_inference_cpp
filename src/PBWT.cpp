@@ -1,4 +1,4 @@
-#include "pbwt.hpp"
+#include "PBWT.hpp"
 
 void VCFReader::preprocess(std::ofstream& out) { 
 		// skip meta-info lines and get header line

@@ -1,4 +1,4 @@
-#include "rpbwt.hpp"
+#include "RPBWT.hpp"
 
 
 void skipMeta(ifstream& in) {
@@ -30,7 +30,6 @@ int runRPBWT(string input_vcf, string write_to, int checkpoint) {
 
 	skipMeta(in);
 	int M = getM(in);
-    std::cout << M << std::endl;
 	
 	int site = 0;
 	vector<int> pre(M), div(M); // prefix and divergence array
